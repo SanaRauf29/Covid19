@@ -1,51 +1,42 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
-
-library(shiny)
-
-# Define UI for application that draws a histogram
+# Define UI
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
+  titlePanel("COVID-19 Dashboard"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("Country/Region", "Select Country", choices = unique(full_grouped$Country)),
+    ),
+    mainPanel(
+      plotlyOutput("time_series_plot"),
+      plotlyOutput("scatter_plot")
     )
+  )
 )
 
-# Define server logic required to draw a histogram
+# Define server
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-    })
+  
+  filtered_data <- reactive({
+    filter(full_grouped, "Country/Region" == input$"Country/Region")
+  })
+  
+  output$time_series_plot <- renderPlotly({
+    plot_ly(data = filtered_data(), x = ~Date, y = ~Confirmed, type = "scatter", mode = "lines",
+            text = ~paste("Date:", Date, "<br>Confirmed Cases:", Confirmed)) %>%
+      layout(title = "Time Series Line Plot of Confirmed Cases over Time",
+             xaxis = list(title = "Date"),
+             yaxis = list(title = "Confirmed Cases"))
+  })
+  
+  output$scatter_plot <- renderPlotly({
+    plot_ly(data = filtered_data(), x = ~Confirmed, y = ~Deaths, type = "scatter", mode = "markers",
+            text = ~paste("Confirmed:", Confirmed, "<br>Deaths:", Deaths)) %>%
+      layout(title = "Scatter Plot of Total Deaths vs Confirmed Cases",
+             xaxis = list(title = "Confirmed Cases"),
+             yaxis = list(title = "Total Deaths"))
+  })
 }
 
-# Run the application 
-shinyApp(ui = ui, server = server)
+# Run the Shiny app
+shinyApp(ui, server)
+
+
