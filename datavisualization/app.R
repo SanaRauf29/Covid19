@@ -3,10 +3,9 @@ ui <- fluidPage(
   titlePanel("COVID-19 Dashboard"),
   sidebarLayout(
     sidebarPanel(
-      selectInput("Country/Region", "Select Country", choices = unique(full_grouped$Country)),
+      selectInput("country", "Select Country", choices = unique(full_grouped$`Country/Region`)),
     ),
     mainPanel(
-      plotlyOutput("time_series_plot"),
       plotlyOutput("scatter_plot")
     )
   )
@@ -16,16 +15,9 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   filtered_data <- reactive({
-    filter(full_grouped, "Country/Region" == input$"Country/Region")
+    subset(full_grouped, `Country/Region` == input$country)
   })
   
-  output$time_series_plot <- renderPlotly({
-    plot_ly(data = filtered_data(), x = ~Date, y = ~Confirmed, type = "scatter", mode = "lines",
-            text = ~paste("Date:", Date, "<br>Confirmed Cases:", Confirmed)) %>%
-      layout(title = "Time Series Line Plot of Confirmed Cases over Time",
-             xaxis = list(title = "Date"),
-             yaxis = list(title = "Confirmed Cases"))
-  })
   
   output$scatter_plot <- renderPlotly({
     plot_ly(data = filtered_data(), x = ~Confirmed, y = ~Deaths, type = "scatter", mode = "markers",
@@ -38,5 +30,3 @@ server <- function(input, output) {
 
 # Run the Shiny app
 shinyApp(ui, server)
-
-
