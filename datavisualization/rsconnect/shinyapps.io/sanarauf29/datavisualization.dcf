@@ -5,7 +5,7 @@ account: sanarauf29
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10983158
-bundleId: 8167603
+bundleId: 8167897
 url: https://sanarauf29.shinyapps.io/datavisualization/
 version: 1
 asMultiple: FALSE
