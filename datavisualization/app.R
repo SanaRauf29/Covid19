@@ -1,6 +1,18 @@
 # Define UI
+library(shinythemes)
+library(tidyr)
+library(shiny)
+library(shinydashboard)
+library(shinythemes)
+library(dplyr)
+library(ggplot2)
+library(renv)
+library(rsconnect)
+library("DT")
+library(plotly)
+library(rmarkdown)
 ui <- fluidPage(
-  titlePanel("COVID-19 Dashboard"),
+
   sidebarLayout(
     sidebarPanel(
       selectInput("country", "Select Country", choices = unique(full_grouped$`Country/Region`)),

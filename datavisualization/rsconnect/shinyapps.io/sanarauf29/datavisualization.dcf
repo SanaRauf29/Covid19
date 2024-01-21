@@ -1,0 +1,12 @@
+name: datavisualization
+title: datavisualization
+username: sanarauf29
+account: sanarauf29
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10983158
+bundleId: 8167603
+url: https://sanarauf29.shinyapps.io/datavisualization/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
